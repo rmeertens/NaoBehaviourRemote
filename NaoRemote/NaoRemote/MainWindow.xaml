@@ -1,10 +1,10 @@
 ﻿<Window x:Class="CadeauThea.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NaoWoZ" Height="400" Width="525">
+        Title="NaoWoZ" Height="500" Width="525">
     <TabControl TabStripPlacement="Top" Margin="0, 0, 0, 10">
     <TabItem Name="wizardOfOzInterfaceTab" Header="Interface">
-            <Grid>
+            <Grid Height="428" VerticalAlignment="Bottom" Margin="0,0,-4,0">
                 <Button Content="Say Sorry" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="runBehavior"/>
                 <Button Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="Stop_all"/>
                 <Button Tag="select_cup" Content="Select cup" HorizontalAlignment="Left" Margin="33,30,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
@@ -15,19 +15,24 @@
                 <Button Tag="select_cup" Content="Select cup" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="select_cup" Content="Select cup" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="select_cup" Content="Next Trial" HorizontalAlignment="Left" Margin="202,304,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
+                <TextBox Tag="words_to_say" Margin="34,376,103,10">bla</TextBox>
+                <Button Tag="say" Content="Say it" HorizontalAlignment="Left" Margin="420,376,0,0" VerticalAlignment="Top" Width="81" Height="42" Click="SayWords"/>
             </Grid>
         </TabItem>
         <TabItem Name="NetworkSettingsTab" Header="Network">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Your Nao's IP Address:"/>
-                    <TextBox>127.0.0.1</TextBox>
+                    <TextBox Tag="nao_ip" TextChanged="UpdateNetworkSettings">127.0.0.1</TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Your Nao's Port:"/>
-                    <TextBox>6551</TextBox>
+                    <TextBox Tag="nao_port" TextChanged="UpdateNetworkSettings">9559</TextBox>
                 </StackPanel>
-                <Button Content="Save" Tag="save_network_settings" Click="SaveNetworkSettings"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Root directory of behaviours:"/>
+                    <TextBox Tag="nao_root_directory" TextChanged="UpdateNetworkSettings">contingency/</TextBox>
+                </StackPanel>
             </StackPanel>
         </TabItem>
     </TabControl>
