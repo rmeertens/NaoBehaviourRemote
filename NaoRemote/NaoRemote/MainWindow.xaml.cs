@@ -62,16 +62,27 @@ namespace CadeauThea
 
         private void NetworkSettingsUpdated()
         {
+            //TODO: we should really move this to a separate thread to keep interface
+            //responsive.
             if (TextToSpeechProxy != null)
                 TextToSpeechProxy.Dispose();
             if (BehaviorManagerProxy != null)
                 BehaviorManagerProxy.Dispose();
             if (LedsProxy != null)
                 LedsProxy.Dispose();
-
-            TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
-            BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
-            LedsProxy = new LedsProxy(nao_ip_address, nao_port);
+            try
+            {
+                TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
+                BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
+                LedsProxy = new LedsProxy(nao_ip_address, nao_port);
+                MessageBox.Show("You are now connected to Nao with IP-address: " + nao_ip_address + " on port " + nao_port + ".",
+                    "Successfully Connected");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Could not connect to Nao  with IP-address: " + nao_ip_address + " on port " + nao_port + ".",
+                    "CONNECTION ERROR");
+            }
         }
 
         private void UpdateNetworkSettings(object sender, RoutedEventArgs e)
@@ -82,7 +93,7 @@ namespace CadeauThea
             switch (updatedTextBoxName)
             {
                 case IP_ADDRESS_TEXT_BOX:
-                    if (newValue.Equals(nao_ip_address))
+                    if (!newValue.Equals(nao_ip_address))
                     {
                         nao_ip_address = newValue;
                     }
