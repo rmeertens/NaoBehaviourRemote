@@ -47,7 +47,11 @@ namespace CadeauThea
             string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
-                BehaviorManagerProxy.post.runBehavior(nao_behavior_root_dir + behaviorName);
+                int postID = BehaviorManagerProxy.post.runBehavior(nao_behavior_root_dir + behaviorName);
+                CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
+                //TODO: Move this to a separate thread to keep UI responsive
+                //BehaviorManagerProxy.wait(postID, 0);
+                //CurrentlyRunningLabel.Content = "Currently Running: None";
             }
             else
             {

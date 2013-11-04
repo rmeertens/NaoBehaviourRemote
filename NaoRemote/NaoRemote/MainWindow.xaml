@@ -29,11 +29,12 @@
                 <Button Tag="introduce" Content="Introduce" HorizontalAlignment="Left" Margin="66,228,0,0" VerticalAlignment="Top" Width="82" Height="47" RenderTransformOrigin="1.147,0.47" Click="runBehavior"/>
                 <Button Tag="say_continue" Content="Say continue" HorizontalAlignment="Left" Margin="375,228,0,0" VerticalAlignment="Top" Width="97" Height="51" Click="runBehavior"/>
                 <Button Tag="point_cup" Content="Point at cup" HorizontalAlignment="Left" Margin="202,30,0,0" VerticalAlignment="Top" Width="114" Click="runBehavior" Height="56"/>
-                <Button Tag="select_cup" Content="Select cup" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
+                <Button Tag="aibot_introduction" Content="Test" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="select_cup" Content="Select cup" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="select_cup" Content="Next Trial" HorizontalAlignment="Left" Margin="202,304,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <TextBox Name="words_to_say" Tag="words_to_say" Margin="34,376,103,10">bla</TextBox>
                 <Button Tag="say" Content="Say it" HorizontalAlignment="Left" Margin="420,376,0,0" VerticalAlignment="Top" Width="81" Height="42" Click="SayWords"/>
+                <Label Name="CurrentlyRunningLabel" Width="300" Height="30" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right">Currently Running: None</Label>
             </Grid>
         </TabItem>
     </TabControl>
