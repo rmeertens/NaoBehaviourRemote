@@ -23,9 +23,13 @@ namespace CadeauThea
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly static string NAO_IP_ADDRESS = "10.0.1.8";
-        private readonly static int NAO_PORT = 9559;
-        private readonly static string ROOT_DIR = "contingency/";
+
+        private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
+        private const string PORT_TEXT_BOX = "nao_port";
+        private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
+        private string nao_ip_address;
+        private int nao_port;
+        private string nao_behavior_root_dir;
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
@@ -33,18 +37,17 @@ namespace CadeauThea
         public MainWindow()
         {
             InitializeComponent();
-            
-            this.TextToSpeechProxy = new TextToSpeechProxy(NAO_IP_ADDRESS, NAO_PORT);
-            this.BehaviorManagerProxy = new BehaviorManagerProxy(NAO_IP_ADDRESS, NAO_PORT);
-            this.LedsProxy = new LedsProxy(NAO_IP_ADDRESS, NAO_PORT);
+            nao_ip_address = TextBoxNaoIP.Text;
+            nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
+            nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
         }
 
         private void runBehavior(object sender, RoutedEventArgs e)
         {
-            string behaviorName = ROOT_DIR + (string)((Button)sender).Tag;
+            string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
-                BehaviorManagerProxy.post.runBehavior(ROOT_DIR + behaviorName);
+                BehaviorManagerProxy.post.runBehavior(nao_behavior_root_dir + behaviorName);
             }
             else
             {
@@ -55,6 +58,58 @@ namespace CadeauThea
         private void Stop_all(object sender, RoutedEventArgs e)
         {
             BehaviorManagerProxy.post.stopAllBehaviors();
+        }
+
+        private void NetworkSettingsUpdated()
+        {
+            if (TextToSpeechProxy != null)
+                TextToSpeechProxy.Dispose();
+            if (BehaviorManagerProxy != null)
+                BehaviorManagerProxy.Dispose();
+            if (LedsProxy != null)
+                LedsProxy.Dispose();
+
+            TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
+            BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
+            LedsProxy = new LedsProxy(nao_ip_address, nao_port);
+        }
+
+        private void UpdateNetworkSettings(object sender, RoutedEventArgs e)
+        {
+            TextBox updatedTextBox = (TextBox)sender;
+            string updatedTextBoxName = (string)updatedTextBox.Tag;
+            string newValue = (string)updatedTextBox.Text;
+            switch (updatedTextBoxName)
+            {
+                case IP_ADDRESS_TEXT_BOX:
+                    if (newValue.Equals(nao_ip_address))
+                    {
+                        nao_ip_address = newValue;
+                    }
+                    break;
+                case PORT_TEXT_BOX:
+                    int portnr = (int)Int32.Parse(newValue);
+                    if (nao_port != portnr)
+                    {
+                        nao_port = portnr;
+                    }
+                    break;
+                case ROOT_DIRECTORY_TEXT_BOX: 
+                    nao_behavior_root_dir = newValue;
+                    break;
+                default: MessageBox.Show("Unknown value edited, this should not happen.", "Interface Error");
+                    break;
+            }
+        }
+
+        private void ConnectToNao(object sender, RoutedEventArgs e) 
+        {
+            NetworkSettingsUpdated();
+        }
+
+        private void SayWords(object sender, RoutedEventArgs e)
+        {
+            this.TextToSpeechProxy.post.say(words_to_say.Text);
         }
     }
 }
