@@ -22,12 +22,12 @@
         </TabItem>
     <TabItem Name="wizardOfOzInterfaceTab" Header="Interface">
             <Grid Height="428" VerticalAlignment="Bottom" Margin="0,0,-4,0">
-                <Button Tag="sorry" Content="Say Sorry" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="runBehavior"/>
+                <Button Tag="cue" Content="Cue" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="runBehavior"/>
                 <Button Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="Stop_all"/>
                 <Button Tag="startup" Content="Startup" HorizontalAlignment="Left" Margin="33,30,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="look" Content="Look" HorizontalAlignment="Left" Margin="358,30,0,0" VerticalAlignment="Top" Width="114" Click="runBehavior" Height="56"/>
                 <Button Tag="push_left" Content="Push Left" HorizontalAlignment="Left" Margin="66,228,0,0" VerticalAlignment="Top" Width="82" Height="47" RenderTransformOrigin="1.147,0.47" Click="runBehavior"/>
-                <Button Tag="push_right" Content="Push_right" HorizontalAlignment="Left" Margin="375,228,0,0" VerticalAlignment="Top" Width="97" Height="51" Click="runBehavior"/>
+                <Button Tag="push_right" Content="Push Right" HorizontalAlignment="Left" Margin="375,228,0,0" VerticalAlignment="Top" Width="97" Height="51" Click="runBehavior"/>
                 <Button Tag="introduction" Content="Introduction" HorizontalAlignment="Left" Margin="202,30,0,0" VerticalAlignment="Top" Width="114" Click="runBehavior" Height="56"/>
                 <Button Tag="point_left" Content="Point Left" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
                 <Button Tag="point_right" Content="Point Right" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="runBehavior"/>
