@@ -47,11 +47,16 @@ namespace CadeauThea
             string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
-                BehaviorManagerProxy.post.runBehavior(nao_behavior_root_dir + behaviorName);
+                int postID = BehaviorManagerProxy.post.runBehavior(behaviorName);
+                CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
+                //TODO: Move this to a separate thread to keep UI responsive
+                //BehaviorManagerProxy.wait(postID, 0);
+                //CurrentlyRunningLabel.Content = "Currently Running: None";
             }
             else
             {
-                MessageBox.Show("The behavior \"" + behaviorName + "\" was not located on Nao.","Unknown Behavior");
+                MessageBox.Show("The behavior \"" + behaviorName + "\" was not located on Nao.",
+                    "Unknown Behavior");
             }           
         }
 
@@ -75,13 +80,13 @@ namespace CadeauThea
                 TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
                 BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
                 LedsProxy = new LedsProxy(nao_ip_address, nao_port);
-                MessageBox.Show("You are now connected to Nao with IP-address: " + nao_ip_address + " on port " + nao_port + ".",
-                    "Successfully Connected");
+                MessageBox.Show("You are now connected to Nao with IP-address: " + nao_ip_address + 
+                    " on port " + nao_port + ".", "Successfully Connected");
             }
             catch (Exception e)
             {
-                MessageBox.Show("Could not connect to Nao  with IP-address: " + nao_ip_address + " on port " + nao_port + ".",
-                    "CONNECTION ERROR");
+                MessageBox.Show("Could not connect to Nao  with IP-address: " + nao_ip_address + 
+                    " on port " + nao_port + ".", "CONNECTION ERROR");
             }
         }
 
