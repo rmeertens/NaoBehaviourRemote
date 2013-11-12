@@ -17,7 +17,7 @@
                     <Label Content="Root directory of behaviours:"/>
                     <TextBox Name="TextBoxNaoBehaviorRoot" Tag="nao_root_directory" TextChanged="UpdateNetworkSettings">contingency/</TextBox>
                 </StackPanel>
-                <Button HorizontalAlignment="Left" Width="200" Content="Connect" Click="ConnectToNao"/>
+                <Button Name="ConnectButton" HorizontalAlignment="Left" Width="200" Content="Connect" Click="ConnectToNao"/>
             </StackPanel>
         </TabItem>
     <TabItem Name="wizardOfOzInterfaceTab" Header="Interface">
