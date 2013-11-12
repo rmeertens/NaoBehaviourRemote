@@ -27,7 +27,8 @@ namespace CadeauThea
     public partial class MainWindow : Window
     {
         private delegate void NoArgDelegate();
-        private delegate void OneArgDelegate(bool arg);
+        private delegate void OneBooleanArgDelegate(bool arg);
+        private delegate void OneStringArgDelegate(string arg);
         private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
         private const string PORT_TEXT_BOX = "nao_port";
         private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
@@ -46,22 +47,32 @@ namespace CadeauThea
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
         }
 
-        private void runBehavior(object sender, RoutedEventArgs e)
+        private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
         {
             string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
-                int postID = BehaviorManagerProxy.post.runBehavior(behaviorName);
                 CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
-                //TODO: Move this to a separate thread to keep UI responsive
-                //BehaviorManagerProxy.wait(postID, 0);
-                //CurrentlyRunningLabel.Content = "Currently Running: None";
+                OneStringArgDelegate behaviorRunner = new OneStringArgDelegate(this.RunBehavior);
+                behaviorRunner.BeginInvoke(behaviorName, null, null);
             }
             else
             {
                 MessageBox.Show("The behavior \"" + behaviorName + "\" was not located on Nao.",
                     "Unknown Behavior");
             }           
+        }
+
+        private void RunBehavior(string behaviorName)
+        {
+            BehaviorManagerProxy.runBehavior(behaviorName);
+            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+        }
+
+        private void UpdateUserInterfaceAfterBehaviorRun()
+        {
+           CurrentlyRunningLabel.Content = "Currently Running: None";
         }
 
         private void Stop_all(object sender, RoutedEventArgs e)
@@ -97,7 +108,7 @@ namespace CadeauThea
                 success = false;
             }
             ConnectButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new OneArgDelegate(UpdateUserInterfaceAfterConnect), success);
+                new OneBooleanArgDelegate(UpdateUserInterfaceAfterConnect), success);
         }
 
         private void UpdateUserInterfaceAfterConnect(bool success)
