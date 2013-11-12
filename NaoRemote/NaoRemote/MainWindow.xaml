@@ -23,7 +23,7 @@
     <TabItem Name="wizardOfOzInterfaceTab" Header="Interface">
             <Grid Height="428" VerticalAlignment="Bottom" Margin="0,0,-4,0">
                 <Button Tag="cue" Content="Cue" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="BehaviorButtonHandler"/>
-                <Button Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="Stop_all"/>
+                <Button Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="StopButtonHandler"/>
                 <Button Tag="startup" Content="Startup" HorizontalAlignment="Left" Margin="33,30,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
                 <Button Tag="look" Content="Look" HorizontalAlignment="Left" Margin="358,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
                 <Button Tag="push_left" Content="Push Left" HorizontalAlignment="Left" Margin="66,228,0,0" VerticalAlignment="Top" Width="82" Height="47" RenderTransformOrigin="1.147,0.47" Click="BehaviorButtonHandler"/>

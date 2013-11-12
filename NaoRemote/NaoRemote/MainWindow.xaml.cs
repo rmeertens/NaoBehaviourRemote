@@ -65,6 +65,13 @@ namespace NaoRemote
             }           
         }
 
+        private void StopButtonHandler(object sender, RoutedEventArgs e)
+        {
+            CurrentlyRunningLabel.Content = "Stopping all behaviors...";
+                NoArgDelegate stopBehaviorDelegate = new NoArgDelegate(this.StopAllBehaviors);
+                stopBehaviorDelegate.BeginInvoke(null, null);
+        }
+
         private void BehaviorSequenceHandler(object sender, RoutedEventArgs e)
         {
             if(sequence.Count > 0) {
@@ -80,7 +87,8 @@ namespace NaoRemote
 
         private void RunBehavior(string behaviorName)
         {
-            BehaviorManagerProxy.runBehavior(behaviorName);
+            int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
+            BehaviorManagerProxy.wait(ID,0);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                 new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
         }
@@ -107,9 +115,10 @@ namespace NaoRemote
            CurrentlyRunningLabel.Content = "Currently Running: None";
         }
 
-        private void Stop_all(object sender, RoutedEventArgs e)
+        private void StopAllBehaviors()
         {
-            BehaviorManagerProxy.post.stopAllBehaviors();
+            int ID = BehaviorManagerProxy.post.stopAllBehaviors();
+            BehaviorManagerProxy.wait(ID, 0);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                 new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
         }
