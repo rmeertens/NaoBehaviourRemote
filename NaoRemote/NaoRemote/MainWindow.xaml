@@ -1,4 +1,4 @@
-﻿<Window x:Class="CadeauThea.MainWindow"
+﻿<Window x:Class="NaoRemote.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="NaoWoZ" Height="500" Width="525">
@@ -31,7 +31,7 @@
                 <Button Tag="introduction" Content="Introduction" HorizontalAlignment="Left" Margin="202,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
                 <Button Tag="point_left" Content="Point Left" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
                 <Button Tag="point_right" Content="Point Right" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
-                <Button Tag="encourage" Content="Encourage" HorizontalAlignment="Left" Margin="202,304,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
+                <Button Tag="nextTrial" Content="Next Trial" HorizontalAlignment="Left" Margin="202,304,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorSequenceHandler"/>
                 <TextBox Name="words_to_say" Tag="words_to_say" Margin="34,376,103,10">bla</TextBox>
                 <Button Tag="say" Content="Say it" HorizontalAlignment="Left" Margin="420,376,0,0" VerticalAlignment="Top" Width="81" Height="42" Click="SayWords"/>
                 <Label Name="CurrentlyRunningLabel" Width="300" Height="30" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right">Currently Running: None</Label>

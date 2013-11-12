@@ -17,8 +17,7 @@ using System.Threading;
 
 using Aldebaran.Proxies;
 
-
-namespace CadeauThea
+namespace NaoRemote
 {
     
     /// <summary>
@@ -29,9 +28,11 @@ namespace CadeauThea
         private delegate void NoArgDelegate();
         private delegate void OneBooleanArgDelegate(bool arg);
         private delegate void OneStringArgDelegate(string arg);
+        private delegate void BehaviorSequenceDelegate(BehaviorSequence arg);
         private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
         private const string PORT_TEXT_BOX = "nao_port";
         private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
+        private TrialSequence sequence; 
         private string nao_ip_address;
         private int nao_port;
         private string nao_behavior_root_dir;
@@ -45,6 +46,7 @@ namespace CadeauThea
             nao_ip_address = TextBoxNaoIP.Text;
             nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
+            sequence = TrialSequence.CreatePredictiveTrialSequence();
         }
 
         private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
@@ -63,11 +65,41 @@ namespace CadeauThea
             }           
         }
 
+        private void BehaviorSequenceHandler(object sender, RoutedEventArgs e)
+        {
+            if(sequence.Count > 0) {
+                BehaviorSequence bs = sequence.Last();
+                sequence.RemoveAt(sequence.Count -1);
+                BehaviorSequenceDelegate sequenceRunner = new BehaviorSequenceDelegate(this.RunBehaviorSequence);
+                sequenceRunner.BeginInvoke(bs, null, null);
+            }
+            else
+                MessageBox.Show("All Trials Completed!!.",
+                    "Trials Completed");
+        }
+
         private void RunBehavior(string behaviorName)
         {
             BehaviorManagerProxy.runBehavior(behaviorName);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                 new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+        }
+
+        private void RunBehaviorSequence(BehaviorSequence behaviorNames)
+        {
+            foreach (string behaviorName in behaviorNames)
+            {
+                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new OneStringArgDelegate(UpdateCurrentlyRunningLabelDuringSequence), behaviorName);
+                BehaviorManagerProxy.runBehavior(behaviorName);
+            }
+            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+        }
+
+        private void UpdateCurrentlyRunningLabelDuringSequence(string behaviorName)
+        {
+            CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
         }
 
         private void UpdateUserInterfaceAfterBehaviorRun()
@@ -78,6 +110,8 @@ namespace CadeauThea
         private void Stop_all(object sender, RoutedEventArgs e)
         {
             BehaviorManagerProxy.post.stopAllBehaviors();
+            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
         }
 
         private void NetworkSettingsUpdated()
@@ -103,7 +137,7 @@ namespace CadeauThea
                 BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
                 LedsProxy = new LedsProxy(nao_ip_address, nao_port);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 success = false;
             }
@@ -121,7 +155,6 @@ namespace CadeauThea
                     " on port " + nao_port + ".", "CONNECTION ERROR");
             ConnectButton.IsEnabled = true;
             ConnectButton.Content = "Connect";
-
         }
 
         private void UpdateNetworkSettings(object sender, RoutedEventArgs e)
