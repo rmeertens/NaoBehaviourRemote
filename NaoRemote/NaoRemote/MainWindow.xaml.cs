@@ -16,6 +16,7 @@ using System.Windows.Threading;
 using System.Threading;
 
 using Aldebaran.Proxies;
+using System.ComponentModel;
 
 namespace NaoRemote
 {
@@ -39,6 +40,7 @@ namespace NaoRemote
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
+        private BackgroundWorker BehaviorFinishWaiter;
 
         public MainWindow()
         {
@@ -47,6 +49,26 @@ namespace NaoRemote
             nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
             sequence = TrialSequence.CreatePredictiveTrialSequence();
+            BehaviorFinishWaiter = new BackgroundWorker();
+            BehaviorFinishWaiter.DoWork += WaitForBehaviorToFinish;
+        }
+
+        private void WaitForBehaviorToFinish(object sender, DoWorkEventArgs e)
+        {
+            int sleeptime = 10;
+            //start waiting for start of behavior
+            while (BehaviorManagerProxy.getRunningBehaviors().Count == 0)
+            {
+                Thread.Sleep(sleeptime);
+            }
+
+            //start waiting for end of behavior
+            while(BehaviorManagerProxy.isBehaviorRunning((string)e.Argument))
+            {
+                Thread.Sleep(sleeptime);
+            }
+            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
         }
 
         private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
@@ -86,8 +108,7 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
-            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+            BehaviorFinishWaiter.RunWorkerAsync(behaviorName);
         }
 
         private void RunBehaviorSequence(BehaviorSequence behaviorNames)
@@ -96,7 +117,7 @@ namespace NaoRemote
             {
                 CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                     new OneStringArgDelegate(UpdateCurrentlyRunningLabelDuringSequence), behaviorName);
-                BehaviorManagerProxy.runBehavior(behaviorName);
+                BehaviorManagerProxy.post.runBehavior(behaviorName);
             }
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                 new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
@@ -109,8 +130,7 @@ namespace NaoRemote
 
         private void UpdateUserInterfaceAfterBehaviorRun()
         {
-           //TODO: call this method when the behavior ENDS, unfortunately C# cannot receive events from Naoqi
-            //CurrentlyRunningLabel.Content = "Currently Running: None";
+            CurrentlyRunningLabel.Content = "Currently Running: None";
         }
 
         private void StopAllBehaviors()
