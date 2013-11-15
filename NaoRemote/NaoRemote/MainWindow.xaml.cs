@@ -37,10 +37,14 @@ namespace NaoRemote
         private string nao_ip_address;
         private int nao_port;
         private string nao_behavior_root_dir;
+
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
         private BackgroundWorker BehaviorFinishWaiter;
+        private Semaphore WaiterFinished = new Semaphore(1, 1);
+
+        private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
 
         public MainWindow()
         {
@@ -56,20 +60,27 @@ namespace NaoRemote
         private void WaitForBehaviorToFinish(object sender, DoWorkEventArgs e)
         {
             int sleeptime = 10;
-            //start waiting for start of behavior
-            //FIXME this will go wrong when more than 1 behavior is running!
-            while (BehaviorManagerProxy.getRunningBehaviors().Count == 0)
+            try
             {
-                Thread.Sleep(sleeptime);
-            }
+                //start waiting for start of behavior
+                //FIXME this will go wrong when more than 1 behavior is running!
+                while (BehaviorManagerProxy.getRunningBehaviors().Count == 0)
+                {
+                    Thread.Sleep(sleeptime);
+                }
 
-            //start waiting for end of behavior
-            while(BehaviorManagerProxy.isBehaviorRunning((string)e.Argument))
-            {
-                Thread.Sleep(sleeptime);
+                //start waiting for end of behavior
+                while (BehaviorManagerProxy.isBehaviorRunning((string)e.Argument))
+                {
+                    Thread.Sleep(sleeptime);
+                }
             }
-            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+            finally
+            {
+                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new NoArgDelegate(BehaviorFinished));
+            }
+            
         }
 
         private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
@@ -83,7 +94,7 @@ namespace NaoRemote
             {
                 MessageBox.Show("The behavior \"" + behaviorName + "\" was not located on Nao.",
                     "Unknown Behavior");
-            }           
+            }
         }
 
         private void StopButtonHandler(object sender, RoutedEventArgs e)
@@ -95,10 +106,9 @@ namespace NaoRemote
         private void BehaviorSequenceHandler(object sender, RoutedEventArgs e)
         {
             if(sequence.Count > 0) {
-                BehaviorSequence bs = sequence.Last();
+                currentSequence = sequence.Last();
                 sequence.RemoveAt(sequence.Count -1);
-                BehaviorSequenceDelegate sequenceRunner = new BehaviorSequenceDelegate(this.RunBehaviorSequence);
-                sequenceRunner.BeginInvoke(bs, null, null);
+                RunBehaviorSequence();
             }
             else
                 MessageBox.Show("All Trials Completed!!.",
@@ -108,25 +118,26 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
+            Console.WriteLine(BehaviorFinishWaiter.IsBusy);
+            WaiterFinished.WaitOne();
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
             BehaviorFinishWaiter.RunWorkerAsync(behaviorName);
         }
 
-        private void RunBehaviorSequence(BehaviorSequence behaviorNames)
+        private void RunBehaviorSequence()
         {
-            foreach (string behaviorName in behaviorNames)
-            {
-                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    new OneStringArgDelegate(UpdateCurrentlyRunningLabelDuringSequence), behaviorName);
-                BehaviorManagerProxy.post.runBehavior(behaviorName);
-            }
-            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+            string behaviorToRun = currentSequence.First();
+            currentSequence.Remove(behaviorToRun);
+            RunBehavior(behaviorToRun);
         }
 
-        private void UpdateCurrentlyRunningLabelDuringSequence(string behaviorName)
+        private void BehaviorFinished()
         {
-            CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
+            WaiterFinished.Release();
+            if (currentSequence.Count > 0)
+                RunBehaviorSequence();
+            else
+                UpdateUserInterfaceAfterBehaviorRun();
         }
 
         private void UpdateUserInterfaceAfterBehaviorRun()
@@ -136,9 +147,13 @@ namespace NaoRemote
 
         private void StopAllBehaviors()
         {
-            int ID = BehaviorManagerProxy.post.stopAllBehaviors();
-            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+            try
+            {
+                int ID = BehaviorManagerProxy.post.stopAllBehaviors();
+                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+            }
+            finally { }
         }
 
         private void NetworkSettingsUpdated()

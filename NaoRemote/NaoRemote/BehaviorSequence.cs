@@ -89,5 +89,10 @@ namespace NaoRemote
         {
             return constructBehaviorSequence(Cue.CUE, Direction.RIGHT, Action.PUSH);
         }
+
+        internal static BehaviorSequence EmptyBehaviorSequence()
+        {
+            return new BehaviorSequence();
+        }
     }
 }
