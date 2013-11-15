@@ -109,7 +109,8 @@ namespace NaoRemote
 
         private void UpdateUserInterfaceAfterBehaviorRun()
         {
-           CurrentlyRunningLabel.Content = "Currently Running: None";
+           //TODO: call this method when the behavior ENDS, unfortunately C# cannot receive events from Naoqi
+            //CurrentlyRunningLabel.Content = "Currently Running: None";
         }
 
         private void StopAllBehaviors()
