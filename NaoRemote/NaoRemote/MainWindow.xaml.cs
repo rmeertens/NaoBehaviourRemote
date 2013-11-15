@@ -57,6 +57,7 @@ namespace NaoRemote
         {
             int sleeptime = 10;
             //start waiting for start of behavior
+            //FIXME this will go wrong when more than 1 behavior is running!
             while (BehaviorManagerProxy.getRunningBehaviors().Count == 0)
             {
                 Thread.Sleep(sleeptime);
@@ -76,7 +77,6 @@ namespace NaoRemote
             string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
-                CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
                 RunBehavior(behaviorName);
             }
             else
@@ -107,6 +107,7 @@ namespace NaoRemote
 
         private void RunBehavior(string behaviorName)
         {
+            CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
             BehaviorFinishWaiter.RunWorkerAsync(behaviorName);
         }
