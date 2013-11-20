@@ -41,8 +41,6 @@ namespace NaoRemote
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
-        private BackgroundWorker BehaviorFinishWaiter;
-        private Semaphore WaiterFinished = new Semaphore(1, 1);
 
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
 
@@ -53,12 +51,10 @@ namespace NaoRemote
             nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
             sequence = TrialSequence.CreatePredictiveTrialSequence();
-            BehaviorFinishWaiter = new BackgroundWorker();
-            BehaviorFinishWaiter.DoWork += WaitForBehaviorToFinish;
             SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
         }
 
-        private void WaitForBehaviorToFinish(object sender, DoWorkEventArgs e)
+        private void WaitForBehaviorToFinish(string behaviorName)
         {
             int sleeptime = 10;
             try
@@ -71,7 +67,7 @@ namespace NaoRemote
                 }
 
                 //start waiting for end of behavior
-                while (BehaviorManagerProxy.isBehaviorRunning((string)e.Argument))
+                while (BehaviorManagerProxy.isBehaviorRunning(behaviorName))
                 {
                     Thread.Sleep(sleeptime);
                 }
@@ -120,10 +116,9 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
-            Console.WriteLine(BehaviorFinishWaiter.IsBusy);
-            WaiterFinished.WaitOne();
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
-            BehaviorFinishWaiter.RunWorkerAsync(behaviorName);
+            OneStringArgDelegate waiter = new OneStringArgDelegate(this.WaitForBehaviorToFinish);
+            waiter.BeginInvoke(behaviorName, null, null);
         }
 
         private void RunBehaviorSequence()
@@ -135,7 +130,6 @@ namespace NaoRemote
 
         private void BehaviorFinished()
         {
-            WaiterFinished.Release();
             if (currentSequence.Count > 0)
                 RunBehaviorSequence();
             else
