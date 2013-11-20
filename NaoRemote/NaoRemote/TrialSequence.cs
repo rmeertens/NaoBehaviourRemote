@@ -36,7 +36,7 @@ namespace NaoRemote
 
         static public TrialSequence CreateUnpredictiveTrialSequence()
         {
-            return CreatePredictiveTrialSequence()
+            return CreatePredictiveTrialSequence();
         }
 
         static public TrialSequence CreatePredictiveTrialSequence()
