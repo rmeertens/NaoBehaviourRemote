@@ -43,6 +43,7 @@ namespace NaoRemote
         private LedsProxy LedsProxy;
 
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
+        private int SubjectNumber;
 
         public MainWindow()
         {
@@ -50,7 +51,7 @@ namespace NaoRemote
             nao_ip_address = TextBoxNaoIP.Text;
             nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
-            sequence = TrialSequence.CreatePredictiveTrialSequence();
+            sequence = TrialSequence.CreateEmptyTrialSequence();
             SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
         }
 
@@ -231,6 +232,19 @@ namespace NaoRemote
         private void SayWords(object sender, RoutedEventArgs e)
         {
             this.TextToSpeechProxy.post.say(words_to_say.Text);
+        }
+
+        internal void SetSubjectNumber(int SubjectNumber)
+        {
+            this.SubjectNumber = SubjectNumber;
+            if(SubjectNumber % 2 == 0) 
+            {
+                this.sequence = TrialSequence.CreatePredictiveTrialSequence();
+            }
+            else 
+            {
+                this.sequence = TrialSequence.CreateUnpredictiveTrialSequence();
+            }
         }
     }
 }

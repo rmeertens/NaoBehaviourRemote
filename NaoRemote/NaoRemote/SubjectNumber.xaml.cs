@@ -19,6 +19,8 @@ namespace NaoRemote
     /// </summary>
     public partial class SubjectNumberWindow : Window
     {
+        private int SubjectNumber;
+
         public SubjectNumberWindow()
         {
             InitializeComponent();
@@ -37,7 +39,7 @@ namespace NaoRemote
             string subjectNumberContent = SubjectNumberInput.Text;
             try
             {
-                int subjectNumber = Int32.Parse(subjectNumberContent);
+                SubjectNumber = Int32.Parse(subjectNumberContent);
                 return true;
             }
             catch (FormatException e)
@@ -49,7 +51,9 @@ namespace NaoRemote
         private void StartApplications()
         {
             this.Hide();
-            new MainWindow().Show();
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.SetSubjectNumber(SubjectNumber);
+            mainWindow.Show();
         }
     }
 }
