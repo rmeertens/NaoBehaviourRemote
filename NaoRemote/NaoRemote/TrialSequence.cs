@@ -29,6 +29,16 @@ namespace NaoRemote
             }
         }
 
+        static public TrialSequence CreateEmptyTrialSequence()
+        {
+            return new TrialSequence();
+        }
+
+        static public TrialSequence CreateUnpredictiveTrialSequence()
+        {
+            return CreatePredictiveTrialSequence()
+        }
+
         static public TrialSequence CreatePredictiveTrialSequence()
         {
             TrialSequence seq = new TrialSequence();
