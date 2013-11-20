@@ -1,0 +1,10 @@
+﻿<Window x:Name="Experiment" x:Class="NaoRemote.SubjectNumberWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Experiment" Height="131" Width="279" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,191,53">
+        <Label Content="Subject Number:" Margin="0,0,-49,-5"/>
+        <TextBox Name="SubjectNumberInput" Margin="0,29,-49,-29" TextAlignment="Right" >1</TextBox>
+        <Button Content="Start" Click="OnStartButtonClick" Margin="172,29,-158,-29"></Button>
+    </Grid>
+</Window>
