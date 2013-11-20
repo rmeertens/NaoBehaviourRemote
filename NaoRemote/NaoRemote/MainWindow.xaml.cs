@@ -55,7 +55,7 @@ namespace NaoRemote
             sequence = TrialSequence.CreatePredictiveTrialSequence();
             BehaviorFinishWaiter = new BackgroundWorker();
             BehaviorFinishWaiter.DoWork += WaitForBehaviorToFinish;
-           // SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
+            SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
         }
 
         private void WaitForBehaviorToFinish(object sender, DoWorkEventArgs e)
