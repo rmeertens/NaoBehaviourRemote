@@ -54,7 +54,7 @@ namespace NaoRemote
             nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
             nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
             sequence = TrialSequence.CreateEmptyTrialSequence();
-            SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
+            UpdateSequenceButtonContext();
         }
 
         private void WaitForBehaviorToFinish(string behaviorName)
@@ -150,6 +150,11 @@ namespace NaoRemote
                 RunBehaviorSequence();
             else
                 UpdateUserInterfaceAfterBehaviorRun();
+        }
+
+        private void UpdateSequenceButtonContext()
+        {
+            SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
         }
 
         private void UpdateUserInterfaceAfterBehaviorRun()
@@ -263,6 +268,8 @@ namespace NaoRemote
             {
                 this.sequence = TrialSequence.CreateUnpredictiveTrialSequence();
             }
+            SequenceButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
+                new NoArgDelegate(UpdateSequenceButtonContext));
         }
     }
 }
