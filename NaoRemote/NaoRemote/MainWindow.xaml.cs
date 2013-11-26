@@ -30,6 +30,7 @@ namespace NaoRemote
         private delegate void OneBooleanArgDelegate(bool arg);
         private delegate void OneStringArgDelegate(string arg);
         private delegate void BehaviorSequenceDelegate(BehaviorSequence arg);
+        private delegate void BehaviorWaiterDelegate(string BehaviorName);
         private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
         private const string PORT_TEXT_BOX = "nao_port";
         private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
@@ -45,6 +46,8 @@ namespace NaoRemote
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
         private int SubjectNumber;
 
+        private bool BehaviorStartedRunning = false;
+
         private readonly object BehaviorProxyLock = new object();
 
         public MainWindow()
@@ -59,38 +62,25 @@ namespace NaoRemote
 
         private void WaitForBehaviorToFinish(string behaviorName)
         {
-            int sleeptime = 10;
-            bool noBehaviorsRunning = true;
-            bool currentBehaviorRunning = true;
-            try
+            bool continueWaiting = true;
+            if (BehaviorStartedRunning)
             {
-                //start waiting for start of behavior
-                //FIXME this will go wrong when more than 1 behavior is running!
-                while (noBehaviorsRunning)
-                {
-                    lock (BehaviorProxyLock)
-                    {
-                        noBehaviorsRunning = BehaviorManagerProxy.getRunningBehaviors().Count == 0;
-                    }
-                    Thread.Sleep(sleeptime);
-                }
+                continueWaiting = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
+            }
+            else
+            {
+                BehaviorStartedRunning = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
+            }
 
-                //start waiting for end of behavior
-                while (currentBehaviorRunning)
-                {
-                    lock (BehaviorProxyLock)
-                    {
-                        currentBehaviorRunning = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
-                    }
-                    Thread.Sleep(sleeptime);
-                }
-            }
-            finally
+            if(continueWaiting)
             {
-                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    new NoArgDelegate(BehaviorFinished));
+                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle,
+                    new BehaviorWaiterDelegate(WaitForBehaviorToFinish), behaviorName);
             }
-            
+            else
+            {
+                BehaviorFinished();
+            }
         }
 
         private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
@@ -129,12 +119,13 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
+            BehaviorStartedRunning = false;
             lock (BehaviorProxyLock)
             {
                 int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
             }
-            OneStringArgDelegate waiter = new OneStringArgDelegate(this.WaitForBehaviorToFinish);
-            waiter.BeginInvoke(behaviorName, null, null);
+            CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
+                new BehaviorWaiterDelegate(WaitForBehaviorToFinish), behaviorName);
         }
 
         private void RunBehaviorSequence()
