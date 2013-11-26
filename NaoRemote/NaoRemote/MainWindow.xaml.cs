@@ -48,8 +48,6 @@ namespace NaoRemote
 
         private bool BehaviorStartedRunning = false;
 
-        private readonly object BehaviorProxyLock = new object();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -120,10 +118,7 @@ namespace NaoRemote
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
             BehaviorStartedRunning = false;
-            lock (BehaviorProxyLock)
-            {
-                int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
-            }
+            int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
                 new BehaviorWaiterDelegate(WaitForBehaviorToFinish), behaviorName);
         }
@@ -157,10 +152,7 @@ namespace NaoRemote
         {
             try
             {
-                lock (BehaviorProxyLock)
-                {
-                    int ID = BehaviorManagerProxy.post.stopAllBehaviors();
-                }
+                int ID = BehaviorManagerProxy.post.stopAllBehaviors();
                 UpdateUserInterfaceAfterBehaviorRun();
             }
             finally { }
