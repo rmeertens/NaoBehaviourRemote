@@ -30,7 +30,7 @@ namespace NaoRemote
         private delegate void OneBooleanArgDelegate(bool arg);
         private delegate void OneStringArgDelegate(string arg);
         private delegate void BehaviorSequenceDelegate(BehaviorSequence arg);
-        private delegate void BehaviorWaiterDelegate(string BehaviorName);
+        private delegate void BehaviorWaiterDelegate(int ID);
         private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
         private const string PORT_TEXT_BOX = "nao_port";
         private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
@@ -46,8 +46,6 @@ namespace NaoRemote
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
         private int SubjectNumber;
 
-        private bool BehaviorStartedRunning = false;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -58,22 +56,13 @@ namespace NaoRemote
             UpdateSequenceButtonContext();
         }
 
-        private void WaitForBehaviorToFinish(string behaviorName)
+        private void WaitForBehaviorToFinish(int ID)
         {
-            bool continueWaiting = true;
-            if (BehaviorStartedRunning)
-            {
-                continueWaiting = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
-            }
-            else
-            {
-                BehaviorStartedRunning = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
-            }
-
+            bool continueWaiting = BehaviorManagerProxy.isRunning(ID);
             if(continueWaiting)
             {
                 CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle,
-                    new BehaviorWaiterDelegate(WaitForBehaviorToFinish), behaviorName);
+                    new BehaviorWaiterDelegate(WaitForBehaviorToFinish), ID);
             }
             else
             {
@@ -117,10 +106,9 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
-            BehaviorStartedRunning = false;
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
-                new BehaviorWaiterDelegate(WaitForBehaviorToFinish), behaviorName);
+                new BehaviorWaiterDelegate(WaitForBehaviorToFinish), ID);
         }
 
         private void RunBehaviorSequence()
