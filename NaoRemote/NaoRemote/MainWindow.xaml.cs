@@ -170,8 +170,7 @@ namespace NaoRemote
                 {
                     int ID = BehaviorManagerProxy.post.stopAllBehaviors();
                 }
-                CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+                UpdateUserInterfaceAfterBehaviorRun();
             }
             finally { }
         }
@@ -268,8 +267,7 @@ namespace NaoRemote
             {
                 this.sequence = TrialSequence.CreateUnpredictiveTrialSequence();
             }
-            SequenceButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
-                new NoArgDelegate(UpdateSequenceButtonContext));
+            UpdateSequenceButtonContext();
         }
     }
 }
