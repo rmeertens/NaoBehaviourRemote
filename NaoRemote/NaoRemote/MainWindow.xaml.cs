@@ -96,6 +96,7 @@ namespace NaoRemote
                 currentSequence = sequence.Last();
                 sequence.RemoveAt(sequence.Count -1);
                 SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
+                SequenceButton.IsEnabled = false;
                 RunBehaviorSequence();
             }
             else
@@ -134,6 +135,8 @@ namespace NaoRemote
         private void UpdateUserInterfaceAfterBehaviorRun()
         {
             CurrentlyRunningLabel.Content = "Currently Running: None";
+            if (currentSequence.Count == 0)
+                SequenceButton.IsEnabled = true;
         }
 
         private void StopAllBehaviors()
