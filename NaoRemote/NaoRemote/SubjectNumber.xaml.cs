@@ -51,6 +51,12 @@ namespace NaoRemote
         private void StartApplications()
         {
             this.Hide();
+            this.StartMainWindow();
+
+        }
+
+        private void StartMainWindow()
+        {
             MainWindow mainWindow = new MainWindow();
             mainWindow.SetSubjectNumber(SubjectNumber);
             mainWindow.Show();
