@@ -45,6 +45,8 @@ namespace NaoRemote
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
         private int SubjectNumber;
 
+        private readonly object BehaviorProxyLock = new object();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -58,18 +60,28 @@ namespace NaoRemote
         private void WaitForBehaviorToFinish(string behaviorName)
         {
             int sleeptime = 10;
+            bool noBehaviorsRunning = true;
+            bool currentBehaviorRunning = true;
             try
             {
                 //start waiting for start of behavior
                 //FIXME this will go wrong when more than 1 behavior is running!
-                while (BehaviorManagerProxy.getRunningBehaviors().Count == 0)
+                while (noBehaviorsRunning)
                 {
+                    lock (BehaviorProxyLock)
+                    {
+                        noBehaviorsRunning = BehaviorManagerProxy.getRunningBehaviors().Count == 0;
+                    }
                     Thread.Sleep(sleeptime);
                 }
 
                 //start waiting for end of behavior
-                while (BehaviorManagerProxy.isBehaviorRunning(behaviorName))
+                while (currentBehaviorRunning)
                 {
+                    lock (BehaviorProxyLock)
+                    {
+                        currentBehaviorRunning = BehaviorManagerProxy.isBehaviorRunning(behaviorName);
+                    }
                     Thread.Sleep(sleeptime);
                 }
             }
@@ -117,7 +129,10 @@ namespace NaoRemote
         private void RunBehavior(string behaviorName)
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
-            int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
+            lock (BehaviorProxyLock)
+            {
+                int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
+            }
             OneStringArgDelegate waiter = new OneStringArgDelegate(this.WaitForBehaviorToFinish);
             waiter.BeginInvoke(behaviorName, null, null);
         }
@@ -146,9 +161,12 @@ namespace NaoRemote
         {
             try
             {
-                int ID = BehaviorManagerProxy.post.stopAllBehaviors();
+                lock (BehaviorProxyLock)
+                {
+                    int ID = BehaviorManagerProxy.post.stopAllBehaviors();
+                }
                 CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
+                new NoArgDelegate(UpdateUserInterfaceAfterBehaviorRun));
             }
             finally { }
         }
