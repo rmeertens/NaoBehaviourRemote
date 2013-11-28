@@ -31,14 +31,9 @@ namespace NaoRemote
         private delegate void OneStringArgDelegate(string arg);
         private delegate void BehaviorSequenceDelegate(BehaviorSequence arg);
         private delegate void BehaviorWaiterDelegate(int ID);
-        private const string IP_ADDRESS_TEXT_BOX = "nao_ip";
-        private const string PORT_TEXT_BOX = "nao_port";
-        private const string ROOT_DIRECTORY_TEXT_BOX = "nao_root_directory";
+        private delegate void ConnectToNaoDelegate(string ip_address, int port);
         private TrialSequence sequence; 
-        private string nao_ip_address;
-        private int nao_port;
-        private string nao_behavior_root_dir;
-
+ 
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
@@ -49,9 +44,6 @@ namespace NaoRemote
         public MainWindow()
         {
             InitializeComponent();
-            nao_ip_address = TextBoxNaoIP.Text;
-            nao_port = (int)Int32.Parse(TextBoxNaoPort.Text);
-            nao_behavior_root_dir = TextBoxNaoBehaviorRoot.Text;
             sequence = TrialSequence.CreateEmptyTrialSequence();
             UpdateSequenceButtonContext();
         }
@@ -72,7 +64,7 @@ namespace NaoRemote
 
         private void BehaviorButtonHandler(object sender, RoutedEventArgs e)
         {
-            string behaviorName = nao_behavior_root_dir + (string)((Button)sender).Tag;
+            string behaviorName = TextBoxNaoBehaviorRoot.Text + (string)((Button)sender).Tag;
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
                 RunBehavior(behaviorName);
@@ -149,15 +141,25 @@ namespace NaoRemote
             finally { }
         }
 
-        private void NetworkSettingsUpdated()
+        private void NetworkSettingsUpdated(object sender, RoutedEventArgs e)
         {
-            ConnectButton.IsEnabled = false;
-            ConnectButton.Content = "Connecting...";
-            NoArgDelegate connector = new NoArgDelegate(this.ConnectToNao);
-            connector.BeginInvoke(null, null);
+            try
+            {
+                string nao_ip_address = TextBoxNaoIP.Text;
+                int nao_port = Int32.Parse(TextBoxNaoPort.Text);
+                ConnectButton.IsEnabled = false;
+                ConnectButton.Content = "Connecting...";
+
+                ConnectToNaoDelegate connector = new ConnectToNaoDelegate(this.ConnectToNao);
+                connector.BeginInvoke(nao_ip_address, nao_port, null, null);
+            }
+            catch (FormatException)
+            {
+                //the field colors red magically
+            }
         }
 
-        private void ConnectToNao()
+        private void ConnectToNao(string nao_ip_address, int nao_port)
         {
             bool success = true;
             if (TextToSpeechProxy != null)
@@ -183,46 +185,18 @@ namespace NaoRemote
         private void UpdateUserInterfaceAfterConnect(bool success)
         {
             if (success)
-                MessageBox.Show("You are now connected to Nao with IP-address: " + nao_ip_address +
-                    " on port " + nao_port + ".", "Successfully Connected");
+                MessageBox.Show("You are now connected to Nao with IP-address: " + TextBoxNaoIP.Text +
+                    " on port " + TextBoxNaoPort.Text + ".", "Successfully Connected");
             else
-                MessageBox.Show("Could not connect to Nao  with IP-address: " + nao_ip_address +
-                    " on port " + nao_port + ".", "CONNECTION ERROR");
+                MessageBox.Show("Could not connect to Nao  with IP-address: " + TextBoxNaoIP.Text +
+                    " on port " + TextBoxNaoPort.Text + ".", "CONNECTION ERROR");
             ConnectButton.IsEnabled = true;
             ConnectButton.Content = "Connect";
         }
 
-        private void UpdateNetworkSettings(object sender, RoutedEventArgs e)
+        private void InterfaceWindowClosing(object sender, CancelEventArgs e)
         {
-            TextBox updatedTextBox = (TextBox)sender;
-            string updatedTextBoxName = (string)updatedTextBox.Tag;
-            string newValue = (string)updatedTextBox.Text;
-            switch (updatedTextBoxName)
-            {
-                case IP_ADDRESS_TEXT_BOX:
-                    if (!newValue.Equals(nao_ip_address))
-                    {
-                        nao_ip_address = newValue;
-                    }
-                    break;
-                case PORT_TEXT_BOX:
-                    int portnr = (int)Int32.Parse(newValue);
-                    if (nao_port != portnr)
-                    {
-                        nao_port = portnr;
-                    }
-                    break;
-                case ROOT_DIRECTORY_TEXT_BOX: 
-                    nao_behavior_root_dir = newValue;
-                    break;
-                default: MessageBox.Show("Unknown value edited, this should not happen.", "Interface Error");
-                    break;
-            }
-        }
-
-        private void ConnectToNao(object sender, RoutedEventArgs e) 
-        {
-            NetworkSettingsUpdated();
+            Properties.Settings.Default.Save();
         }
 
         private void SayWords(object sender, RoutedEventArgs e)
