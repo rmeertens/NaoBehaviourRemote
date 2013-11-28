@@ -27,13 +27,13 @@
       <Value Profile="(Default)">MJPG</Value>
     </Setting>
     <Setting Name="VideoFilePrefix" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">"nao_video_participant_"</Value>
+      <Value Profile="(Default)">nao_video_participant_</Value>
     </Setting>
     <Setting Name="VideoFileSuffix" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">".avi"</Value>
+      <Value Profile="(Default)">.avi</Value>
     </Setting>
     <Setting Name="VideoDirectory" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">""</Value>
+      <Value Profile="(Default)">/home/nao/recordings</Value>
     </Setting>
   </Settings>
 </SettingsFile>

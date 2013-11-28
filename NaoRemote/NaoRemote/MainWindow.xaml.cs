@@ -70,8 +70,6 @@ namespace NaoRemote
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
                 RunBehavior(behaviorName);
-                if (!VideoRecorderProxy.isRecording())
-                    StartVideoRecording();
             }
             else
             {
@@ -110,6 +108,8 @@ namespace NaoRemote
 
         private void RunBehaviorSequence()
         {
+            if (!VideoRecorderProxy.isRecording())
+                    StartVideoRecording();
             string behaviorToRun = currentSequence.First();
             currentSequence.Remove(behaviorToRun);
             RunBehavior(behaviorToRun);

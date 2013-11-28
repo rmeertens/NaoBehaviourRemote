@@ -112,7 +112,7 @@ namespace NaoRemote.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"nao_video_participant_\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("nao_video_participant_")]
         public string VideoFilePrefix {
             get {
                 return ((string)(this["VideoFilePrefix"]));
@@ -121,7 +121,7 @@ namespace NaoRemote.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\".avi\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute(".avi")]
         public string VideoFileSuffix {
             get {
                 return ((string)(this["VideoFileSuffix"]));
@@ -130,7 +130,7 @@ namespace NaoRemote.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("/home/nao/recordings")]
         public string VideoDirectory {
             get {
                 return ((string)(this["VideoDirectory"]));
