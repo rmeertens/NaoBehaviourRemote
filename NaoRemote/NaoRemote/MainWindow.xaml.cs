@@ -37,6 +37,7 @@ namespace NaoRemote
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
+        private VideoRecorderProxy VideoRecorderProxy;
 
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
         private int SubjectNumber;
@@ -69,6 +70,8 @@ namespace NaoRemote
             if (BehaviorManagerProxy.isBehaviorPresent(behaviorName))
             {
                 RunBehavior(behaviorName);
+                if (!VideoRecorderProxy.isRecording())
+                    StartVideoRecording();
             }
             else
             {
@@ -160,6 +163,19 @@ namespace NaoRemote
             }
         }
 
+        private void StartVideoRecording()
+        {
+            VideoRecorderProxy.setFrameRate(Properties.Settings.Default.FrameRate);
+            VideoRecorderProxy.setResolution(Properties.Settings.Default.VideoResolution);
+            VideoRecorderProxy.setVideoFormat(Properties.Settings.Default.VideoFormat);
+            VideoRecorderProxy.startRecording(Properties.Settings.Default.VideoDirectory,CreateVideoFileName());
+        }
+
+        private string CreateVideoFileName()
+        {
+            return Properties.Settings.Default.VideoFilePrefix + SubjectNumber + Properties.Settings.Default.VideoFileSuffix;
+        }
+
         private void ConnectToNao(string nao_ip_address, int nao_port)
         {
             bool success = true;
@@ -169,11 +185,18 @@ namespace NaoRemote
                 BehaviorManagerProxy.Dispose();
             if (LedsProxy != null)
                 LedsProxy.Dispose();
+            if (VideoRecorderProxy != null)
+            {
+                if (VideoRecorderProxy.isRecording())
+                    VideoRecorderProxy.stopRecording();
+                VideoRecorderProxy.Dispose();
+            }
             try
             {
                 TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
                 BehaviorManagerProxy = new BehaviorManagerProxy(nao_ip_address, nao_port);
                 LedsProxy = new LedsProxy(nao_ip_address, nao_port);
+                VideoRecorderProxy = new VideoRecorderProxy(nao_ip_address, nao_port);
             }
             catch (Exception)
             {
@@ -213,6 +236,7 @@ namespace NaoRemote
 
         private void InterfaceWindowClosing(object sender, CancelEventArgs e)
         {
+            VideoRecorderProxy.stopRecording();
             Properties.Settings.Default.Save();
         }
 
