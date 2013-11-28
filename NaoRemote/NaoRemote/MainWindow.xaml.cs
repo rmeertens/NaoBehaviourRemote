@@ -46,6 +46,7 @@ namespace NaoRemote
             InitializeComponent();
             sequence = TrialSequence.CreateEmptyTrialSequence();
             UpdateSequenceButtonContext();
+            SetWozButtonsEnabled(false);
         }
 
         private void WaitForBehaviorToFinish(int ID)
@@ -192,6 +193,22 @@ namespace NaoRemote
                     " on port " + TextBoxNaoPort.Text + ".", "CONNECTION ERROR");
             ConnectButton.IsEnabled = true;
             ConnectButton.Content = "Connect";
+            SetWozButtonsEnabled(true);
+        }
+
+        private void SetWozButtonsEnabled(bool enabled)
+        {
+            BehaviorButton1.IsEnabled = enabled;
+            BehaviorButton2.IsEnabled = enabled;
+            BehaviorButton3.IsEnabled = enabled;
+            BehaviorButton4.IsEnabled = enabled;
+            BehaviorButton5.IsEnabled = enabled;
+            BehaviorButton6.IsEnabled = enabled;
+            BehaviorButton7.IsEnabled = enabled;
+            BehaviorButton8.IsEnabled = enabled;
+            SequenceButton.IsEnabled = enabled;
+            StopAllBehaviorsButton.IsEnabled = enabled;
+            SayButton.IsEnabled = enabled;
         }
 
         private void InterfaceWindowClosing(object sender, CancelEventArgs e)

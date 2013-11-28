@@ -27,19 +27,19 @@
         </TabItem>
     <TabItem Name="wizardOfOzInterfaceTab" Header="Interface">
             <Grid Height="428" VerticalAlignment="Bottom" Margin="0,0,-4,0">
-                <Button Tag="cue" Content="Cue" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="BehaviorButtonHandler"/>
-                <Button Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="StopButtonHandler"/>
-                <Button Tag="startup" Content="Startup" HorizontalAlignment="Left" Margin="33,30,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
-                <Button Tag="look" Content="Look" HorizontalAlignment="Left" Margin="358,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
-                <Button Tag="push_left" Content="Push Left" HorizontalAlignment="Left" Margin="66,228,0,0" VerticalAlignment="Top" Width="82" Height="47" RenderTransformOrigin="1.147,0.47" Click="BehaviorButtonHandler"/>
-                <Button Tag="push_right" Content="Push Right" HorizontalAlignment="Left" Margin="375,228,0,0" VerticalAlignment="Top" Width="97" Height="51" Click="BehaviorButtonHandler"/>
-                <Button Tag="introduction" Content="Introduction" HorizontalAlignment="Left" Margin="202,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
-                <Button Tag="point_left" Content="Point Left" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
-                <Button Tag="point_right" Content="Point Right" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
+                <Button Name="BehaviorButton1" Tag="cue" Content="Cue" HorizontalAlignment="Left" Margin="222,228,0,0" VerticalAlignment="Top" Width="81" Height="47" Click="BehaviorButtonHandler"/>
+                <Button Name="StopAllBehaviorsButton" Content="Stop all" HorizontalAlignment="Left" Margin="178,110,0,0" VerticalAlignment="Top" Width="159" Height="93" Click="StopButtonHandler"/>
+                <Button Name="BehaviorButton2" Tag="startup" Content="Startup" HorizontalAlignment="Left" Margin="33,30,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
+                <Button Name="BehaviorButton3" Tag="look" Content="Look" HorizontalAlignment="Left" Margin="358,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
+                <Button Name="BehaviorButton4" Tag="push_left" Content="Push Left" HorizontalAlignment="Left" Margin="66,228,0,0" VerticalAlignment="Top" Width="82" Height="47" RenderTransformOrigin="1.147,0.47" Click="BehaviorButtonHandler"/>
+                <Button Name="BehaviorButton5" Tag="push_right" Content="Push Right" HorizontalAlignment="Left" Margin="375,228,0,0" VerticalAlignment="Top" Width="97" Height="51" Click="BehaviorButtonHandler"/>
+                <Button Name="BehaviorButton6" Tag="introduction" Content="Introduction" HorizontalAlignment="Left" Margin="202,30,0,0" VerticalAlignment="Top" Width="114" Click="BehaviorButtonHandler" Height="56"/>
+                <Button Name="BehaviorButton7" Tag="point_left" Content="Point Left" HorizontalAlignment="Left" Margin="33,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
+                <Button Name="BehaviorButton8" Tag="point_right" Content="Point Right" HorizontalAlignment="Left" Margin="358,128,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorButtonHandler"/>
                 <Button Name="SequenceButton" Tag="nextTrial" Content="Next Trial" HorizontalAlignment="Left" Margin="202,304,0,0" VerticalAlignment="Top" Width="123" Height="56" Click="BehaviorSequenceHandler"/>
                 <TextBox Name="words_to_say" Tag="words_to_say" Margin="34,376,103,10"
                          Text="{Binding Source={x:Static properties:Settings.Default}, Path=TextToSpeechSentence}" />
-                <Button Tag="say" Content="Say it" HorizontalAlignment="Left" Margin="420,376,0,0" VerticalAlignment="Top" Width="81" Height="42" Click="SayWords"/>
+                <Button Name="SayButton" Tag="say" Content="Say it" HorizontalAlignment="Left" Margin="420,376,0,0" VerticalAlignment="Top" Width="81" Height="42" Click="SayWords"/>
                 <Label Name="CurrentlyRunningLabel" Width="300" Height="30" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Right">Currently Running: None</Label>
             </Grid>
         </TabItem>
