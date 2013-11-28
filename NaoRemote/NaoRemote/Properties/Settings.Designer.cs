@@ -22,5 +22,65 @@ namespace NaoRemote.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10.0.1.2")]
+        public string NaoIPAddress {
+            get {
+                return ((string)(this["NaoIPAddress"]));
+            }
+            set {
+                this["NaoIPAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9559")]
+        public int NaoPortNumber {
+            get {
+                return ((int)(this["NaoPortNumber"]));
+            }
+            set {
+                this["NaoPortNumber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("contingency/")]
+        public string NaoBehaviorRootDirectory {
+            get {
+                return ((string)(this["NaoBehaviorRootDirectory"]));
+            }
+            set {
+                this["NaoBehaviorRootDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("I can say anything you type here.")]
+        public string TextToSpeechSentence {
+            get {
+                return ((string)(this["TextToSpeechSentence"]));
+            }
+            set {
+                this["TextToSpeechSentence"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int SubjectNumberDefault {
+            get {
+                return ((int)(this["SubjectNumberDefault"]));
+            }
+            set {
+                this["SubjectNumberDefault"] = value;
+            }
+        }
     }
 }

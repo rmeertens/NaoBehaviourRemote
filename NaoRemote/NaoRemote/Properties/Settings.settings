@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NaoRemote.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="NaoIPAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.0.1.2</Value>
+    </Setting>
+    <Setting Name="NaoPortNumber" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">9559</Value>
+    </Setting>
+    <Setting Name="NaoBehaviorRootDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">contingency/</Value>
+    </Setting>
+    <Setting Name="TextToSpeechSentence" Type="System.String" Scope="User">
+      <Value Profile="(Default)">I can say anything you type here.</Value>
+    </Setting>
+    <Setting Name="SubjectNumberDefault" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
