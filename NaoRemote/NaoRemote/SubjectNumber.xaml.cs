@@ -30,8 +30,6 @@ namespace NaoRemote
         {
             if (ValidSubjectNumber())
                 StartApplications();
-            else
-                MessageBox.Show("The subject number you entered is not a number!", "Error");
         }
 
         private bool ValidSubjectNumber()
@@ -42,7 +40,7 @@ namespace NaoRemote
                 SubjectNumber = Int32.Parse(subjectNumberContent);
                 return true;
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 return false;
             }
@@ -52,7 +50,6 @@ namespace NaoRemote
         {
             this.Hide();
             this.StartMainWindow();
-
         }
 
         private void StartMainWindow()
