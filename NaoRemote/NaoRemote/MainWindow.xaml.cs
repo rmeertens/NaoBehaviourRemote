@@ -176,9 +176,8 @@ namespace NaoRemote
             return Properties.Settings.Default.VideoFilePrefix + SubjectNumber + Properties.Settings.Default.VideoFileSuffix;
         }
 
-        private void ConnectToNao(string nao_ip_address, int nao_port)
+        private void DisposeOfAllProxies()
         {
-            bool success = true;
             if (TextToSpeechProxy != null)
                 TextToSpeechProxy.Dispose();
             if (BehaviorManagerProxy != null)
@@ -191,6 +190,11 @@ namespace NaoRemote
                     VideoRecorderProxy.stopRecording();
                 VideoRecorderProxy.Dispose();
             }
+        }
+
+        private void ConnectToNao(string nao_ip_address, int nao_port)
+        {
+            bool success = true;
             try
             {
                 TextToSpeechProxy = new TextToSpeechProxy(nao_ip_address, nao_port);
@@ -236,7 +240,7 @@ namespace NaoRemote
 
         private void InterfaceWindowClosing(object sender, CancelEventArgs e)
         {
-            VideoRecorderProxy.stopRecording();
+            DisposeOfAllProxies();
             Properties.Settings.Default.Save();
         }
 
