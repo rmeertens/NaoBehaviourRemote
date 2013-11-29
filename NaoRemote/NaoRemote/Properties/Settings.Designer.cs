@@ -136,5 +136,23 @@ namespace NaoRemote.Properties {
                 return ((string)(this["VideoDirectory"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("behavior_log.csv")]
+        public string LogFileName {
+            get {
+                return ((string)(this["LogFileName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(";")]
+        public string CSVFieldSeparator {
+            get {
+                return ((string)(this["CSVFieldSeparator"]));
+            }
+        }
     }
 }

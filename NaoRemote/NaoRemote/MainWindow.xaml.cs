@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Threading;
 
 using Aldebaran.Proxies;
 using System.ComponentModel;
@@ -105,6 +95,7 @@ namespace NaoRemote
         {
             CurrentlyRunningLabel.Content = "Currently Running: " + behaviorName;
             int ID = BehaviorManagerProxy.post.runBehavior(behaviorName);
+            LogBehavior(behaviorName);
             CurrentlyRunningLabel.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
                 new BehaviorWaiterDelegate(WaitForBehaviorToFinish), ID);
         }
@@ -173,6 +164,52 @@ namespace NaoRemote
             VideoRecorderProxy.setVideoFormat(Properties.Settings.Default.VideoFormat);
             VideoRecorderProxy.startRecording(Properties.Settings.Default.VideoDirectory,CreateVideoFileName());
         }
+
+        private void WriteLogFileHeader(StreamWriter writer)
+        {
+            string sep = Properties.Settings.Default.CSVFieldSeparator;
+            writer.Write("SubjectNumber");
+            writer.Write(sep);
+            writer.Write("Date");
+            writer.Write(sep);
+            writer.Write("Time");
+            writer.Write(sep);
+            writer.Write("Sequence");
+            writer.Write(sep);
+            writer.Write("TrialsLeft");
+            writer.Write(sep);
+            writer.Write("Behavior");
+            writer.WriteLine("");
+        }
+        
+        private void WriteLogFileData(StreamWriter LogWriter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LogBehavior(string behaviorName)
+        {
+            string logFilePath = Path.Combine(Directory.GetCurrentDirectory(), Properties.Settings.Default.LogFileName);
+            bool writeHeader = !File.Exists(logFilePath);
+            using (FileStream fs = new FileStream(logFilePath, FileMode.Append))
+            {
+                using (StreamWriter LogWriter = new StreamWriter(fs))
+                {
+                    try
+                    {
+                        if (writeHeader)
+                            this.WriteLogFileHeader(LogWriter);
+                        this.WriteLogFileData(LogWriter);
+                    }
+                    catch (IOException ioe)
+                    {
+
+                    }
+                }
+            }
+        }
+
+
 
         private string CreateVideoFileName()
         {
