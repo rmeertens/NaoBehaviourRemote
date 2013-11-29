@@ -31,14 +31,14 @@ namespace NaoRemote
 
         //behavior and trial sequences
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
-        private TrialSequence sequence; 
+        private TrialSequence TrialSequence; 
 
         private int SubjectNumber;
 
         public MainWindow()
         {
             InitializeComponent();
-            sequence = TrialSequence.CreateEmptyTrialSequence();
+            TrialSequence = TrialSequence.CreateEmptyTrialSequence();
             UpdateSequenceButtonContext();
             SetWozButtonsEnabled(false);
         }
@@ -79,10 +79,10 @@ namespace NaoRemote
 
         private void BehaviorSequenceHandler(object sender, RoutedEventArgs e)
         {
-            if(sequence.Count > 0) {
-                currentSequence = sequence.Last();
-                sequence.RemoveAt(sequence.Count -1);
-                SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
+            if(TrialSequence.Count > 0) {
+                currentSequence = TrialSequence.Last();
+                TrialSequence.RemoveAt(TrialSequence.Count -1);
+                SequenceButton.Content = "Next Trial (" + TrialSequence.Count + ")";
                 SequenceButton.IsEnabled = false;
                 RunBehaviorSequence();
             }
@@ -119,7 +119,7 @@ namespace NaoRemote
 
         private void UpdateSequenceButtonContext()
         {
-            SequenceButton.Content = "Next Trial (" + sequence.Count + ")";
+            SequenceButton.Content = "Next Trial (" + TrialSequence.Count + ")";
         }
 
         private void UpdateUserInterfaceAfterBehaviorRun()
@@ -176,15 +176,34 @@ namespace NaoRemote
             writer.Write(sep);
             writer.Write("Sequence");
             writer.Write(sep);
-            writer.Write("TrialsLeft");
+            writer.Write("TrialNumber");
             writer.Write(sep);
-            writer.Write("Behavior");
+            writer.Write("TrialCode");
+            writer.Write(sep);
+            writer.Write("BehaviorName");
             writer.WriteLine("");
         }
         
-        private void WriteLogFileData(StreamWriter LogWriter)
+        private void WriteLogFileData(StreamWriter writer, string behaviorName)
         {
-            throw new NotImplementedException();
+            string sep = Properties.Settings.Default.CSVFieldSeparator;
+            string date = System.DateTime.Now.ToString("dd-MM-yyyy");
+            string time = System.DateTime.Now.ToString("HH:mm:ss");
+            writer.Write(this.SubjectNumber);
+            writer.Write(sep);
+            writer.Write(date);
+            writer.Write(sep);
+            writer.Write(time);
+            writer.Write(sep);
+            writer.Write(TrialSequence.GetName());
+            writer.Write(sep);
+            writer.Write(TrialSequence.TrialNumber());
+            writer.Write(sep);
+            writer.Write(currentSequence.GetName());
+            writer.Write(sep);
+            writer.Write(behaviorName);
+            writer.WriteLine("");
+
         }
 
         private void LogBehavior(string behaviorName)
@@ -199,7 +218,7 @@ namespace NaoRemote
                     {
                         if (writeHeader)
                             this.WriteLogFileHeader(LogWriter);
-                        this.WriteLogFileData(LogWriter);
+                        this.WriteLogFileData(LogWriter, behaviorName);
                     }
                     catch (IOException ioe)
                     {
@@ -294,11 +313,11 @@ namespace NaoRemote
             this.SubjectNumber = SubjectNumber;
             if(SubjectNumber % 2 == 0) 
             {
-                this.sequence = TrialSequence.CreatePredictiveTrialSequence();
+                this.TrialSequence = TrialSequence.CreatePredictiveTrialSequence();
             }
             else 
             {
-                this.sequence = TrialSequence.CreateUnpredictiveTrialSequence();
+                this.TrialSequence = TrialSequence.CreateUnpredictiveTrialSequence();
             }
             UpdateSequenceButtonContext();
         }

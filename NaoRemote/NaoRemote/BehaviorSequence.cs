@@ -19,14 +19,32 @@ namespace NaoRemote
         private const string POINT_LEFT_BEHAVIOR = BASE_DIR + "point_left";
         private const string PUSH_RIGHT_BEHAVIOR = BASE_DIR + "push_right";
         private const string PUSH_LEFT_BEHAVIOR = BASE_DIR + "push_left";
-        
-        private BehaviorSequence() : base() 
-        { 
+
+        private Direction MyDirection;
+        private Cue MyCue;
+        private Action MyAction;
+
+        private BehaviorSequence(Direction d, Cue c, Action a) 
+            : this()
+        {
+            MyDirection = d;
+            MyCue = c;
+            MyAction = a;
+        }
+
+        private BehaviorSequence()
+            : base()
+        {
+        }
+
+        public string GetName()
+        {
+            return MyAction.ToString() + "-" + MyCue.ToString() + "-" + MyDirection.ToString();
         }
 
         private static BehaviorSequence constructBehaviorSequence(Cue c, Direction d, Action a)
         {
-            BehaviorSequence sec = new BehaviorSequence();
+            BehaviorSequence sec = new BehaviorSequence(d,c,a);
             sec.Add(LOOK_BEHAVIOR);
             switch (c)
             {

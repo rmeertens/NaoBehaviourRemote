@@ -9,11 +9,12 @@ namespace NaoRemote
 {
     class TrialSequence : List<BehaviorSequence>
     {
-        private TrialSequence() : base() { }
+        private string Name;
+        private int nTrials;
 
-        static private void Shuffle(TrialSequence seq) 
+        private TrialSequence() : base() 
         {
-
+            Name = "Default";
         }
 
         public void Shuffle()
@@ -27,6 +28,16 @@ namespace NaoRemote
                 this[k] = this[n];
                 this[n] = value;
             }
+        }
+
+        public string GetName()
+        {
+            return Name;
+        }
+
+        public int TrialNumber()
+        {
+            return nTrials - Count;
         }
 
         static public TrialSequence CreateEmptyTrialSequence()
@@ -52,6 +63,8 @@ namespace NaoRemote
                 seq.Add(BehaviorSequence.PointLeftNoCueSequence());
                 seq.Add(BehaviorSequence.PointRightNoCueSequence());
             }
+            seq.nTrials = seq.Count;
+            seq.Name = "Predictive";
             seq.Shuffle();
             return seq;
         }
