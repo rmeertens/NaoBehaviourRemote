@@ -26,20 +26,23 @@ namespace NaoRemote
     /// </summary>
     public partial class MainWindow : Window
     {
+        //delegators for asynchronous calls
         private delegate void NoArgDelegate();
-        private delegate void OneBooleanArgDelegate(bool arg);
-        private delegate void OneStringArgDelegate(string arg);
+        private delegate void UpdateInterfaceAfterConnectDelegate(bool arg);
         private delegate void BehaviorSequenceDelegate(BehaviorSequence arg);
         private delegate void BehaviorWaiterDelegate(int ID);
         private delegate void ConnectToNaoDelegate(string ip_address, int port);
-        private TrialSequence sequence; 
  
+        //naoqi proxies
         private TextToSpeechProxy TextToSpeechProxy;
         private BehaviorManagerProxy BehaviorManagerProxy;
         private LedsProxy LedsProxy;
         private VideoRecorderProxy VideoRecorderProxy;
 
+        //behavior and trial sequences
         private BehaviorSequence currentSequence = BehaviorSequence.EmptyBehaviorSequence();
+        private TrialSequence sequence; 
+
         private int SubjectNumber;
 
         public MainWindow()
@@ -207,7 +210,7 @@ namespace NaoRemote
                 success = false;
             }
             ConnectButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new OneBooleanArgDelegate(UpdateUserInterfaceAfterConnect), success);
+                new UpdateInterfaceAfterConnectDelegate(UpdateUserInterfaceAfterConnect), success);
         }
 
         private void UpdateUserInterfaceAfterConnect(bool success)
